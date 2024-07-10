@@ -1,0 +1,94 @@
+:root {
+    --color-CloudWhite: #e2e0d7;
+    --color-FresoRed: #b64c13;
+    --color-FresoGreen: #44d150;
+    --color-FresoBlue: #4a78d3;
+    --color-FresoPink: #cc96db;
+    --color-FresoLime: #a9d689;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        @apply scrollbar /* firefoxScrollbar */;
+    }
+    header {
+        @apply flex justify-center items-center w-full h-[10vh] p-2 md:p-4 bg-black text-white  top-0 left-0 fixed;
+    }
+    main {
+        @apply flex flex-col px-0 xl:px-10 py-6 w-full min-h-[80vh] mt-[10vh];
+    }
+    footer {
+        @apply flex flex-col justify-center items-start bg-black text-white w-full min-h-[10vh] max-h-fit p-2 md:p-4 text-xs md:text-sm mt-20;
+    }
+    section {
+        @apply flex flex-col mx-auto items-center mt-10 gap-5;
+    }
+    h1 {
+        @apply text-2xl font-bold;
+    }
+    h2 {
+        @apply text-lg md:text-2xl;
+    }
+    h3 {
+        @apply text-base md:text-lg;
+    }
+    h4 {
+        @apply text-xs italic md:text-base;
+    }
+    input {
+        @apply border border-black p-2;
+    }
+    select {
+        @apply w-full px-6 py-3 border border-black;
+    }
+}
+@layer components {
+    #app {
+        @apply overflow-y-scroll font-questrial w-screen min-h-screen flex flex-col bg-gray-100;
+    }
+    #logo {
+        @apply w-[220px] lg:w-[250px] mx-auto;
+    }
+    #map {
+        @apply h-[50vh] xl:h-[60vh] w-[80vw] xl:w-[60vw] shadow-lg;
+    }
+}
+@layer utilities {
+    .scrollbar-thumb-rounded-full::-webkit-scrollbar-thumb {
+        border-radius: 9999px;
+    }
+    .activeOption {
+        @apply border-b-2 border-black;
+    }
+    .scrollbar {
+        @apply scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-black scrollbar-thumb-rounded-full;
+    }
+    .align {
+        @apply mx-auto text-center;
+    }
+    .button {
+        @apply uppercase border-2 border-black bg-gray-300 hover:bg-gray-400 p-2 px-6;
+    }
+    .button_white {
+        @apply uppercase border-2 border-black p-2 px-6;
+    }
+    .strong {
+        @apply uppercase font-bold;
+    }
+    .overlay {
+        @apply fixed top-0 left-0 bg-slate-700 bg-opacity-70 z-40 w-screen h-screen flex justify-center items-center;
+    }
+    .error {
+        @apply text-red-500 italic;
+    }
+
+    /* Firefox specific styles */
+    /*  .firefoxScrollbar {
+        scrollbar-width: thin !important;
+        scrollbar-color: gray black !important;
+    } */
+}

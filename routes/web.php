@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Models\Car;
 use Illuminate\Http\Request;
-use App\Http\Controllers\GeneratorPdfController;
+use App\Http\Controllers\BookAppointmentController;
+use App\Http\Controllers\PaintSpecialistController;
 use App\Models\Country;
 
 
@@ -23,8 +24,10 @@ Route::get('/configurator', function () {
     ]);
 })->name('configure');
 
-//route to generate a pdf
-Route::post('/configurator', [GeneratorPdfController::class, 'generatePdf'])->name('generatePdf');
+//route to book an appointment and generate a pdf
+Route::post('/configurator', [BookAppointmentController::class, 'bookAppointment'])->name('bookAppointment');
+
+Route::post('/tailoredPaint', [PaintSpecialistController::class, 'paintSpecialist'])->name('paintSpecialist');
 
 
 //find your dealer route

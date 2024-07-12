@@ -12,7 +12,7 @@
         <SelectedConfiguration :configurationData="configurationData" />
 
         <!-- SELECT LOCATION SECTION -->
-        <div class="mt-14 p-4 flex flex-col w-full items-center">
+        <div class="flex flex-col items-center w-full p-4 mt-14">
             <!-- country selector -->
             <div class="flex flex-col w-full xl:w-[60vw]">
                 <h3>Coutry</h3>
@@ -79,7 +79,7 @@
             </div>
         </div>
         <!-- MAPS API component -->
-        <div class="p-4 z-0 flex justify-center w-full h-full">
+        <div class="z-0 flex justify-center w-full h-full p-4">
             <SlippyMap
                 :selectedAddress="selectedAddress"
                 :computedAddresses="computedAddresses"
@@ -87,12 +87,12 @@
         </div>
 
         <!-- BOOK AN APPOINTMENT FORM -->
-        <div class="p-4 mt-10" v-if="!successFormSubmit.val">
+        <div class="p-4 mt-10" v-if="!succMessage">
             <form
                 @submit.prevent="bookAppointment"
                 action=""
                 method="post"
-                class="flex flex-col w-full p-10 border border-black items-center"
+                class="flex flex-col items-center w-full p-10 border border-black"
             >
                 <div class="flex flex-col w-full">
                     <label for="fullName" class="">Full Name</label>
@@ -137,7 +137,7 @@
                     </div>
 
                     <label for="privacy" class="mt-4">Privacy</label>
-                    <div class="flex gap-2 items-center">
+                    <div class="flex items-center gap-2">
                         <input
                             type="checkbox"
                             name="privacy"
@@ -158,15 +158,15 @@
                     </div>
                 </div>
                 <!-- submit button -->
-                <div class="w-full flex flex-col items-center">
+                <div class="flex flex-col items-center w-full">
                     <button
                         type="submit"
-                        class="mt-4 border-2 border-black uppercase px-6 py-2 max-w-fit"
+                        class="px-6 py-2 mt-4 uppercase border-2 border-black max-w-fit"
                     >
                         book an appointment
                     </button>
                     <!-- send pdf via email checkbox -->
-                    <div class="flex gap-2 items-center mt-4">
+                    <div class="flex items-center gap-2 mt-4">
                         <input
                             type="checkbox"
                             name="sendEmail"
@@ -181,10 +181,10 @@
             </form>
         </div>
         <div
-            v-if="successFormSubmit.val"
+            v-if="succMessage"
             class="p-4 mt-10 w-[80vw] xl:w-[60vw] h-[20vh] border border-black flex justify-center items-center text-base uppercase align"
         >
-            {{ successFormSubmit.message }}
+            {{ succMessage }}
         </div>
     </Layout>
 </template>
@@ -220,9 +220,9 @@ const page = usePage();
 const errors = computed(() => {
     return page.props.errors;
 });
-const successFormSubmit = ref({
-    val: false,
-    message: "Form succesfully sent!!",
+
+const succMessage = computed(() => {
+    return page.props.flash.message;
 });
 
 //LOGIC
@@ -288,16 +288,21 @@ const bookAppointment = () => {
         selectedAddress: selectedAddress.value,
         personalData: formData.value,
     };
-    router.post(route("generatePdf"), data, {
+    router.post(route("bookAppointment"), data, {
+        //on success resets the form values
         onSuccess: () => {
-            formData.value = {
-                fullName: "",
-                email: "",
-                phoneNumber: "",
-                privacy: false,
-                sendEmail: false,
-            };
-            successFormSubmit.value.val = true;
+            [
+                (formData.value = {
+                    fullName: "",
+                    email: "",
+                    phoneNumber: "",
+                    privacy: false,
+                    sendEmail: false,
+                }),
+                (selectedCountry.value = null),
+                (selectedCity.value = null),
+                (selectedAddress.value = null),
+            ];
         },
     });
 };

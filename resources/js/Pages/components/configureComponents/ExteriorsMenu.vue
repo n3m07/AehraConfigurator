@@ -7,7 +7,7 @@
             <div>{{ selectedExteriorPaint }}</div>
             <div class="italic">Included</div>
             <!-- paint selector -->
-            <div class="flex flex-wrap justify-center mt-5 gap-5 xl:gap-10">
+            <div class="flex flex-wrap justify-center gap-5 mt-5 xl:gap-10">
                 <div
                     v-for="color in selectedModel.exteriorColor"
                     :key="color"
@@ -23,15 +23,22 @@
         </div>
 
         <!-- tailormade pait section -->
-        <div class="align mt-14 gap-2">
+        <div class="gap-2 align mt-14">
             <div class="uppercase">have your paint tailormade</div>
             <div>Estimate cost €20,000 - €50,000</div>
             <!-- talk to a paint specialist button -->
             <div
-                class="button mt-2 cursor-pointer"
+                v-if="!succMessage"
+                class="mt-2 cursor-pointer button"
                 @click="togglePaintSpecialistMenu"
             >
                 speak to aehra's paint specialist
+            </div>
+            <div
+                v-if="succMessage"
+                class="mt-2 text-green-500 uppercase button_white"
+            >
+                {{ succMessage }}
             </div>
         </div>
     </section>
@@ -41,11 +48,11 @@
             class="w-[90vw] md:w-[50vw] md:h-[60vh] h-[80vh] bg-white relative z-50 shadow-lg flex justify-center items-center flex-col uppercase text-sm md:text-base p-10"
         >
             <div
-                class="w-full h-full flex flex-col items-center justify-center gap-1 md:gap-4"
+                class="flex flex-col items-center justify-center w-full h-full gap-1 md:gap-4"
             >
                 <div class="hover:scale-105" @click="togglePaintSpecialistMenu">
                     <svg
-                        class="w-10 md:w-14 h-10 md:h-14 cursor-pointer"
+                        class="w-10 h-10 cursor-pointer md:w-14 md:h-14"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -60,10 +67,10 @@
                     </svg>
                 </div>
                 <form
-                    @submit.prevent="bookAppointment"
+                    @submit.prevent="paintSpecialist"
                     action=""
                     method="post"
-                    class="w-full flex flex-col items-center justify-center"
+                    class="flex flex-col items-center justify-center w-full"
                 >
                     <div class="flex flex-col w-full">
                         <label for="fullName" class="">Full Name</label>
@@ -75,11 +82,8 @@
                             required
                             v-model="formData.fullName"
                         />
-                        <div
-                            v-if="errors['personalData.fullName']"
-                            class="error"
-                        >
-                            {{ errors["personalData.fullName"] }}
+                        <div v-if="errors['fullName']" class="error">
+                            {{ errors["fullName"] }}
                         </div>
 
                         <label for="email" class="mt-4">E-mail</label>
@@ -91,8 +95,8 @@
                             required
                             v-model="formData.email"
                         />
-                        <div v-if="errors['personalData.email']" class="error">
-                            {{ errors["personalData.email"] }}
+                        <div v-if="errors['email']" class="error">
+                            {{ errors["email"] }}
                         </div>
                         <label for="phoneNumber" class="mt-4"
                             >Phone number</label
@@ -105,15 +109,12 @@
                             required
                             v-model="formData.phoneNumber"
                         />
-                        <div
-                            v-if="errors['personalData.phoneNumber']"
-                            class="error"
-                        >
-                            {{ errors["personalData.phoneNumber"] }}
+                        <div v-if="errors['phoneNumber']" class="error">
+                            {{ errors["phoneNumber"] }}
                         </div>
 
                         <label for="privacy" class="mt-4">Privacy</label>
-                        <div class="flex gap-2 items-center">
+                        <div class="flex flex-wrap items-center gap-2">
                             <input
                                 type="checkbox"
                                 name="privacy"
@@ -125,11 +126,8 @@
                                 >I consent to the processing of my personal
                                 data.</label
                             >
-                            <div
-                                v-if="errors['personalData.privacy']"
-                                class="error"
-                            >
-                                {{ errors["personalData.privacy"] }}
+                            <div v-if="errors['privacy']" class="error">
+                                {{ errors["privacy"] }}
                             </div>
                         </div>
                     </div>
@@ -137,7 +135,7 @@
 
                     <button
                         type="submit"
-                        class="mt-4 border-2 border-black uppercase px-6 py-2 w-full align"
+                        class="w-full px-6 py-2 mt-4 uppercase border-2 border-black align"
                     >
                         submit
                     </button>
@@ -168,6 +166,9 @@ const page = usePage();
 const errors = computed(() => {
     return page.props.errors;
 });
+const succMessage = computed(() => {
+    return page.props.flash.message;
+});
 
 //LOGIC
 // function to generate dynamic styles
@@ -184,19 +185,21 @@ function togglePaintSpecialistMenu() {
     return (paintSpecialistMenu.value = !paintSpecialistMenu.value);
 }
 
-const bookAppointment = () => {
+// function to post the paint specialist form request
+const paintSpecialist = () => {
     const personalData = formData.value;
-    router.post(route(""), personalData, {
+    //***NOTE FOR MYSELF the formData obj gets automatically destructured so it has to be accessed in the controller as separate variables.
+    router.post(route("paintSpecialist"), personalData, {
         onSuccess: () => {
             formData.value = {
                 fullName: "",
                 email: "",
                 phoneNumber: "",
                 privacy: false,
-                sendEmail: false,
             };
-            successFormSubmit.value.val = true;
+            paintSpecialistMenu.value = false;
         },
     });
+    console.log(personalData);
 };
 </script>
